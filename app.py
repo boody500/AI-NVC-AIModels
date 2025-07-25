@@ -293,7 +293,7 @@ async def predict(request: Request):
     return JSONResponse({"videos": results})
 
 @app.get("/")
-def home():
+async def home():
     return JSONResponse("YouTube Transcript Analysis API is running!")
 # Preload models on startup
 load_models()
