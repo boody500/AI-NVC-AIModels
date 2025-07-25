@@ -292,5 +292,8 @@ async def predict(request: Request):
     results = compute_video_avg_embeddings(prompt, results)
     return JSONResponse({"videos": results})
 
+@app.get("/")
+def home():
+    return JSONResponse("YouTube Transcript Analysis API is running!")
 # Preload models on startup
 load_models()
