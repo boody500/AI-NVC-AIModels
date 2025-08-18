@@ -2,7 +2,7 @@
 
 # Azure App Service startup script for YouTube Transcript Analysis API
 
-set -e  # Exit on any error
+set -eu  # Exit on error or undefined variable
 
 echo "=== Starting YouTube Transcript Analysis API ==="
 echo "Current working directory: $(pwd)"
@@ -17,10 +17,7 @@ export HF_HOME="/app/cache"
 
 # Create required directories if they don't exist
 echo "Creating required directories..."
-mkdir -p /app/videos
-mkdir -p /app/cache
-chmod 755 /app/videos
-chmod 755 /app/cache
+mkdir -p /app/videos /app/cache
 
 # Pre-download models to avoid first-request delays
 echo "Pre-loading models..."
@@ -31,13 +28,9 @@ from app import load_models
 print('Loading T5 and Whisper models...')
 load_models()
 print('Models loaded successfully!')
-" || echo "Warning: Model preloading failed, will load on first request"
+" || echo "⚠️ Warning: Model preloading failed, will load on first request"
 
 echo "=== Starting Gunicorn server ==="
-echo "Binding to 0.0.0.0:8080"
-echo "Workers: 1, Threads: 4, Timeout: 600s"
-
-# Start the application with Gunicorn
 exec gunicorn \
     --bind 0.0.0.0:8080 \
     --workers 1 \

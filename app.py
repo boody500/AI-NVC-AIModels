@@ -118,6 +118,9 @@ def fetch_transcript2(video_id):
         segments, info = whisper.transcribe(
             file, beam_size=5, vad_filter=True, word_timestamps=True
         )
+        # Clean up the file after processing
+        if os.path.exists(file):
+            os.remove(file)
         return [{"text": s.text, "start": float(s.start), "end": float(s.end)} for s in segments]
     except:
         return False
@@ -367,6 +370,8 @@ def predict():
 
 
 # ------------------- MAIN ENTRY -------------------
+
+
 def run_app():
     port = int(os.environ.get("PORT", 8000))  # Azure uses dynamic port
     app.run(host="0.0.0.0", port=port, debug=False)

@@ -13,11 +13,17 @@ nosetests.xml
 coverage.xml
 *.cover
 *.log
+
+# Git
 .git
 .gitignore
+
+# Docs & build files
 README.md
 Dockerfile
 .dockerignore
+
+# Runtime-generated files
 videos/
 cookies.txt
 cache/
