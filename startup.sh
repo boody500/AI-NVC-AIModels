@@ -31,8 +31,9 @@ print('Models loaded successfully!')
 " || echo "⚠️ Warning: Model preloading failed, will load on first request"
 
 echo "=== Starting Gunicorn server ==="
+# Start the application with Gunicorn on the dynamic Azure PORT
 exec gunicorn \
-    --bind 0.0.0.0:8080 \
+    --bind 0.0.0.0:${PORT} \
     --workers 1 \
     --threads 4 \
     --timeout 600 \

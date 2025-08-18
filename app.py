@@ -373,7 +373,7 @@ def predict():
 
 
 def run_app():
-    port = int(os.environ.get("PORT", 8000))  # Azure uses dynamic port
+    port = int(os.environ.get("PORT", 8080))  # Azure uses dynamic port
     app.run(host="0.0.0.0", port=port, debug=False)
 
 if __name__ == "__main__":
