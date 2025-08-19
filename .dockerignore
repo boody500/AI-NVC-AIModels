@@ -1,3 +1,4 @@
+# Python cache / bytecode
 __pycache__/
 *.pyc
 *.pyo
@@ -5,6 +6,8 @@ __pycache__/
 .Python
 *.so
 .pytest_cache/
+
+# Test & coverage
 .coverage
 htmlcov/
 .tox/
@@ -18,12 +21,14 @@ coverage.xml
 .git
 .gitignore
 
-# Docs & build files
+# Docs & configs not needed in container
 README.md
 Dockerfile
 .dockerignore
 
-# Runtime-generated files
+# Local runtime / temp files
 videos/
 cookies.txt
+
+# Do not copy local model cache (image builds its own)
 cache/

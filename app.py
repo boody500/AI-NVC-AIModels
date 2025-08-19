@@ -287,6 +287,10 @@ def ensure_models_loaded():
 def home():
     return jsonify({"message": "YouTube Transcript Analysis API is running!", "version": "1.0.0"})
 
+@app.route("/health", methods=["GET"])
+def health_check():
+    return jsonify({"status": "ok"}), 200
+
 @app.route("/GetTranscript", methods=["GET"])
 def get_transcript():
     """Get transcript for a specific video ID."""
