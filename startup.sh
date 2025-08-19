@@ -36,7 +36,7 @@ exec gunicorn \
     --bind 0.0.0.0:${PORT} \
     --workers 1 \
     --threads 4 \
-    --timeout 600 \
+    --timeout 3800 \
     --worker-class sync \
     --preload \
     --access-logfile - \
