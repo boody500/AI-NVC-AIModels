@@ -28,15 +28,28 @@ tokenizer = None
 model = None
 whisper = None
 
+
+
+
 def load_models():
-    global tokenizer, model, whisper
+    global t5_tokenizer, t5_model, whisper_model
     if tokenizer is None or model is None or whisper is None:
         print("Loading T5 model...")
-        tokenizer = T5Tokenizer.from_pretrained('t5-base')
-        model = T5Model.from_pretrained('t5-base')
+        t5_tokenizer = T5Tokenizer.from_pretrained("t5-base")
+        t5_model = T5Model.from_pretrained("t5-base")
         print(f"Loading Whisper on {DEVICE}...")
         whisper = WhisperModel("base", device=DEVICE, compute_type=WHISPER_COMPUTE_TYPE)
         print("Models loaded successfully!")
+
+#def load_models():
+ #   global tokenizer, model, whisper
+  #  if tokenizer is None or model is None or whisper is None:
+   #     print("Loading T5 model...")
+    #    tokenizer = T5Tokenizer.from_pretrained('t5-base')
+     #   model = T5Model.from_pretrained('t5-base')
+      #  print(f"Loading Whisper on {DEVICE}...")
+       # whisper = WhisperModel("base", device=DEVICE, compute_type=WHISPER_COMPUTE_TYPE)
+        #print("Models loaded successfully!")
 
 # ------------------- COOKIE FUNCTION -------------------
 def get_youtube_cookies():
@@ -376,9 +389,10 @@ def predict():
 # ------------------- MAIN ENTRY -------------------
 
 
-def run_app():
-    port = int(os.environ.get("PORT", 8080))  # Azure uses dynamic port
-    app.run(host="0.0.0.0", port=port, debug=False)
+#def run_app():
+#   port = int(os.environ.get("PORT", 7860))  # Azure uses dynamic port
+#  app.run(host="0.0.0.0", port=port, debug=False)
 
 if __name__ == "__main__":
-    run_app()
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 8000)), debug=False)
+

@@ -1,34 +1,45 @@
-# Python cache / bytecode
+# Ignore Python cache
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
-.Python
-*.so
-.pytest_cache/
 
-# Test & coverage
-.coverage
-htmlcov/
-.tox/
-.cache
-nosetests.xml
-coverage.xml
-*.cover
+# Ignore virtual environments
+venv/
+.env/
+*.env
+
+# Ignore logs
 *.log
 
-# Git
-.git
+# Ignore cache folders
+cache/
+app/cache/
+transformers_cache/
+.huggingface/
+
+# Ignore large data files
+*.mp4
+*.mp3
+*.wav
+*.flac
+*.zip
+*.tar.gz
+
+# Ignore system files
+.DS_Store
+Thumbs.db
+
+# Ignore Git files
+.git/
 .gitignore
 
-# Docs & configs not needed in container
-README.md
+# Ignore Docker files (optional if only needed locally)
 Dockerfile
-.dockerignore
+docker-compose.yml
 
-# Local runtime / temp files
+
+# Temporary storage (not needed in image)
 videos/
 cookies.txt
-
-# Do not copy local model cache (image builds its own)
 cache/

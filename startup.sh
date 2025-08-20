@@ -1,43 +1,26 @@
 #!/bin/bash
+set -e
 
-# Azure App Service startup script for YouTube Transcript Analysis API
+echo "🚀 Running startup script for Azure..."
 
-set -e  # Exit on any error
+# Preload models (to avoid slow first request)
+python - <<EOF
+from transformers import T5Tokenizer, T5Model
+from faster_whisper import WhisperModel
 
-echo "=== Starting YouTube Transcript Analysis API ==="
-echo "Current working directory: $(pwd)"
-echo "Python version: $(python --version)"
-echo "Available memory: $(free -h)"
-echo "Available disk space: $(df -h /)"
+print("Preloading models...")
 
-# Set up environment
-export PYTHONPATH="/app:$PYTHONPATH"
-export TRANSFORMERS_CACHE="/app/cache"
-export HF_HOME="/app/cache"
+T5Tokenizer.from_pretrained("t5-base")
+T5Model.from_pretrained("t5-base")
 
-# Create required directories if they don't exist
-echo "Creating required directories..."
-mkdir -p /app/videos
-mkdir -p /app/cache
-chmod 755 /app/videos
-chmod 755 /app/cache
+WhisperModel("base", device="cpu")
 
-# Skip model preloading (already done at Docker build stage)
-echo "✅ Models already cached in Docker image, skipping preload."
+print("✅ Models cached successfully!")
+EOF
 
-echo "=== Starting Gunicorn server ==="
-echo "Binding to 0.0.0.0:${PORT:-8080}"
-echo "Workers: 1, Threads: 4, Timeout: 600s"
-
-# Start the application with Gunicorn
-exec gunicorn \
-    --bind 0.0.0.0:${PORT:-8080} \
-    --workers 1 \
-    --threads 4 \
-    --timeout 600 \
-    --worker-class sync \
-    --access-logfile - \
-    --error-logfile - \
-    --log-level info \
-    --worker-tmp-dir /dev/shm \
-    app:app
+# Start API with Gunicorn
+exec gunicorn app:app \
+    --workers 2 \
+    --worker-class uvicorn.workers.UvicornWorker \
+    --bind 0.0.0.0:8000 \
+    --timeout 300

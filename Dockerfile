@@ -1,42 +1,37 @@
-# Use slim Python image
+# Base image
 FROM python:3.10-slim
 
-# Set working directory
-WORKDIR /app
+# Set environment vars
+ENV PYTHONUNBUFFERED=1 \
+    PIP_NO_CACHE_DIR=1 \
+    TRANSFORMERS_CACHE=/app/cache \
+    HF_HOME=/app/cache \
+    PATH="/root/.local/bin:$PATH"
 
-# Install system dependencies (ffmpeg for Whisper + others you may need)
+# Install system deps
 RUN apt-get update && apt-get install -y \
     ffmpeg \
     git \
     curl \
-    build-essential \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy requirements first for caching
-COPY requirements.txt /app/requirements.txt
+# Create workdir
+WORKDIR /app
 
-# Install Python dependencies
-RUN pip install --no-cache-dir -r requirements.txt
+# Copy requirements first
+COPY requirements.txt .
 
-# Set HuggingFace/Transformers cache directories inside container
-ENV TRANSFORMERS_CACHE=/app/cache \
-    HF_HOME=/app/cache \
-    PYTHONPATH=/app
+# Install dependencies
+RUN pip install --upgrade pip && pip install -r requirements.txt
 
-# Create cache + video directories
-RUN mkdir -p /app/cache /app/videos
+# Copy code
+COPY . .
 
-# Copy application code
-COPY . /app
+# Make startup script executable
+RUN chmod +x startup.sh
 
-# Pre-download models at build time so they’re baked into the image
-RUN python -c "import sys; sys.path.append('/app'); from app import load_models; load_models(); print('✅ Models downloaded and cached inside Docker image')"
+# Expose port
+EXPOSE 8000
 
-# Ensure startup script is executable
-RUN chmod +x /app/startup.sh
-
-# Expose default port (Azure sets $PORT dynamically, but expose 8080 for local dev)
-EXPOSE 8080
-
-# Use startup script as entrypoint
-CMD ["/bin/bash", "/app/startup.sh"]
+# Start using startup.sh
+CMD ["./startup.sh"]
